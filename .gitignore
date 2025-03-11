@@ -1,0 +1,7 @@
+# ignore all node_module
+node_modules/*
+# # ignore config file
+# config/config.env
+config/command.txt
+package-lock.json
+package.json
