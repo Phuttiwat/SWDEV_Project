@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const AppointmentSchema = new mongoose.Schema({
-    apptDate: {
+    appDate: {
         type: Date,
         require: true
     },
