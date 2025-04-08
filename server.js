@@ -14,8 +14,8 @@ const swaggerUI = require('swagger-ui-express');
 dotenv.config({path:'./config/config.env'});
 
 //Route file
-const hospitals = require('./routes/hospitals');
-const appointments = require('./routes/appointments');
+const companies = require('./routes/companies');
+const bookings = require('./routes/bookings');
 const auth = require('./routes/auth');
 
 //Connect to database
@@ -63,8 +63,8 @@ app.use(hpp());
 app.use(cookieParser());
 
 //add url path
-app.use('/api/v1/hospitals',hospitals);
-app.use('/api/v1/appointments',appointments)
+app.use('/api/v1/companies',companies);
+app.use('/api/v1/bookings',bookings)
 app.use('/api/v1/auth',auth);
 
 //Running server

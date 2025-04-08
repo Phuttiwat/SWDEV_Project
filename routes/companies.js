@@ -173,18 +173,18 @@
  */
 
 const express = require('express');
-const {getHospitals,getHospital,createHospital,updateHospital,deleteHospital}=require('../controllers/hospitals.js')
+const {getCompanies,getCompany,createCompany,updateCompany,deleteCompany}=require('../controllers/companies.js')
 //Include other resource routers
-const appointmentRouter = require('./appointments')
+const bookingRouter = require('./bookings')
 
 const router = express.Router();
 
-const {protect,authorize} = require('../middleware/auth');
+const {protect,authorize} = require('../middleware/auth.js');
 
 //Re-route into other resource routers
-router.use('/:hospitalId/appointments/',appointmentRouter);
+router.use('/:companyId/bookings/',bookingRouter);
 
-router.route('/').get(getHospitals).post(protect,authorize('admin'),createHospital);
-router.route('/:id').get(getHospital).put(protect,authorize('admin'),updateHospital).delete(protect,authorize('admin'),deleteHospital);
+router.route('/').get(getCompanies).post(protect,authorize('admin'),createCompany);
+router.route('/:id').get(getCompany).put(protect,authorize('admin'),updateCompany).delete(protect,authorize('admin'),deleteCompany);
 
 module.exports=router;

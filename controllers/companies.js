@@ -1,7 +1,7 @@
-const Hospital = require('../models/Hospital');
-const Appointment = require('../models/Appointment');
+const Company = require('../models/Company');
+const Booking = require('../models/Booking');
 
-exports.getHospitals= async (req,res,next)=>{
+exports.getCompanies= async (req,res,next)=>{
     let query;
 
     //Copy req.query
@@ -12,7 +12,6 @@ exports.getHospitals= async (req,res,next)=>{
 
     //Loop over remove fields and delete them from reqQuery
     removeFields.forEach(param=>delete reqQuery[param]);
-    console.log(reqQuery);
 
     //Create query string
     let queryStr = JSON.stringify(reqQuery);
@@ -21,7 +20,7 @@ exports.getHospitals= async (req,res,next)=>{
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match=>`$${match}`);
 
     //finding resource
-    query = Hospital.find(JSON.parse(queryStr)).populate('appointments');
+    query = Company.find(JSON.parse(queryStr)).populate('bookings');
 
     //Select Fields
     if(req.query.select){
@@ -40,12 +39,12 @@ exports.getHospitals= async (req,res,next)=>{
     const limit = parseInt(req.query.limit,10)||25;
     const startIndex = (page-1)*limit;
     const endIndex = page*limit;
-    const total = await Hospital.countDocuments();
+    const total = await Company.countDocuments();
     query = query.skip(startIndex).limit(limit);
 
     try {
         //Executing query
-        const hospitals = await query; 
+        const companies = await query; 
 
         //Pagination result
         const pagination = {};
@@ -63,49 +62,49 @@ exports.getHospitals= async (req,res,next)=>{
                 limit
             }
         }
-        res.status(200).json({success:true, count:hospitals.length,
-        pagination, data:hospitals});
+        res.status(200).json({success:true, count:companies.length,
+        pagination, data:companies});
     } catch (err) {
         res.status(400).json({success:false});
     }
 }
-exports.getHospital= async (req,res,next)=>{
+exports.getCompany= async (req,res,next)=>{
     try {
-        const hospital = await Hospital.findById(req.params.id);
-        if(!hospital){
+        const company = await Company.findById(req.params.id);
+        if(!company){
             return res.status(400).json({success:false});
         }
-        res.status(200).json({success:true,data:hospital});
+        res.status(200).json({success:true,data:company});
     } catch (err) {
         res.status(400).json({success:false});
     }
 }
-exports.createHospital= async (req,res,next)=>{
-    const hospital = await Hospital.create(req.body);
-    res.status(201).json({ success: true, data: hospital });
+exports.createCompany= async (req,res,next)=>{
+    const company = await Company.create(req.body);
+    res.status(201).json({ success: true, data: company });
 }
-exports.updateHospital= async (req,res,next)=>{
+exports.updateCompany= async (req,res,next)=>{
     try {
-        const hospital = await Hospital.findByIdAndUpdate(req.params.id, req.body,{
+        const company = await Company.findByIdAndUpdate(req.params.id, req.body,{
             new: true,
             runValidators:true
         });
-        if(!hospital){
+        if(!company){
             return res.status(400).json({success:false});
         }
-        return res.status(200).json({success:true, data:hospital});
+        return res.status(200).json({success:true, data:company});
     } catch (err) {
         return res.status(400).json({success:false});
     }
 }
-exports.deleteHospital= async (req,res,next)=>{
+exports.deleteCompany= async (req,res,next)=>{
     try {
-        const hospital = await Hospital.findById(req.params.id);
-        if(!hospital){
+        const company = await Company.findById(req.params.id);
+        if(!company){
             return res.status(400).json({success:false});
         }
-        await Appointment.deleteMany({hospital: req.params.id});
-        await Hospital.deleteOne({_id: req.params.id});
+        await Booking.deleteMany({company: req.params.id});
+        await Company.deleteOne({_id: req.params.id});
         return res.status(200).json({success:true, data:{}});
     } catch (err) {
         return res.status(400).json({success:false});
