@@ -2,28 +2,36 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const UserSchema =  mongoose.Schema({
+const UserSchema = mongoose.Schema({
     name: {
-        type:String,
-        require:[true,'Please add name']
+        type: String,
+        required: [true, 'Please add name']
     },
     email: {
         type: String,
-        required:[true,'Pleas add email'],
+        required: [true, 'Please add email'],
         unique: true,
         match: [
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             'Please add a valid email'
-          ]
+        ]
+    },
+    telephone_number: {
+        type: String,
+        required: [true, 'Please add a telephone number'],
+        match: [
+            /^\+?[0-9]{10,15}$/,
+            'Please add a valid telephone number'
+        ]
     },
     role: {
         type: String,
-        enum: ['user','admin'],
+        enum: ['user', 'admin'],
         default: 'user'
     },
     password: {
         type: String,
-        required:[true,'Please add a password'],
+        required: [true, 'Please add a password'],
         minlength: 6,
         select: false
     },
@@ -34,6 +42,7 @@ const UserSchema =  mongoose.Schema({
         default: Date.now
     }
 });
+
 
 //Encrypt password using bcrypt
 UserSchema.pre('save', async function(next){
