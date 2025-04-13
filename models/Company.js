@@ -50,4 +50,12 @@ CompanySchema.virtual('bookings',{
     foreignField: 'company',
     justOne: false
 });
+
+//Reverse populate with virtuals
+CompanySchema.virtual('feedbacks',{
+    ref: 'Feedback',
+    localField: '_id',
+    foreignField: 'company',
+    justOne: false
+});
 module.exports=mongoose.model('Company',CompanySchema);
