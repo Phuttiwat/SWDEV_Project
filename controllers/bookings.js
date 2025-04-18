@@ -6,22 +6,22 @@ const Company = require("../models/Company")
 //@access   Public
 exports.getBookings = async (req,res,next)=>{
     let query;
-    //General user can see onlu their appoinments
+    //General user can see only their appoinments
     if(req.user.role !== 'admin'){
         query=Booking.find({user:req.user.id}).populate({
             path: 'company',
-            select: 'name description tel'
+            select: 'name description website tel'
         });
     }else{
         if(req.params.companyId){
             query=Booking.find({company: req.params.companyId}).populate({
                 path: 'company',
-                select: 'name description tel'
+                select: 'name description website tel'
             });
         }else{
             query=Booking.find().populate({
                 path: 'company',
-                select: 'name description tel'
+                select: 'name description website tel'
             });
         }
        
@@ -39,6 +39,51 @@ exports.getBookings = async (req,res,next)=>{
         return res.status(500).json({success:false, message:"Cannot find Booking"});
     }
 };
+
+//@desc     Get all bookings from a specific date
+//@route    GET /api/v1/bookings/date/:date
+//@access   Public
+exports.getBookingsByDate = async (req,res,next)=>{
+    try {
+        const dateParam = req.params.date;
+
+        // Validate date format (YYYY-MM-DD)
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dateRegex.test(dateParam)) {
+            return res.status(400).json({ success: false, message: 'Invalid date format. Use YYYY-MM-DD.' });
+        }
+
+        const date = new Date(dateParam);
+
+        if (isNaN(date.getTime()) || !date) {
+            return res.status(400).json({ success: false, message: 'Invalid date' });
+        }
+
+        // Set the start and end of the day for the query
+        const startOfDay = new Date(date);
+        startOfDay.setUTCHours(0, 0, 0, 0);
+        const endOfDay = new Date(date);
+        endOfDay.setUTCHours(23, 59, 59, 999);
+
+        const bookings = await Booking.find({
+            bookDate: {
+                $gte: startOfDay,
+                $lte: endOfDay
+            }
+        }).populate({
+            path: 'company',
+            select: 'name description website tel'
+        });
+
+        res.status(200).json({
+            success: true,
+            data: bookings
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: 'Cannot find Booking' });
+    }
+}
 
 //@desc     Get single booking
 //@route    Get /api/v1/bookings/:id
