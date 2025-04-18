@@ -1,6 +1,6 @@
 const Booking = require("../models/Booking")
 const Company = require("../models/Company")
-
+const smsService = require("../services/smsService")
 //@desc     Get all bookings
 //@route    GET /api/v1/bookings
 //@access   Public
@@ -158,6 +158,16 @@ exports.addBooking = async (req,res,next)=>{
         }
 
         const booking = await Booking.create(req.body);
+        
+        // หลังจองเสร็จ → ส่ง SMS
+        try {
+            const userPhone = req.user.tel;
+            const userName = req.user.name;
+            const message = `สวัสดีคุณ ${userName}, การจองสัมภาษณ์กับบริษัท ${company.name} ของคุณสำเร็จแล้วในวันที่ ${req.body.bookDate}`;
+            await sendSMS(userPhone, message);
+        } catch (smsError) {
+            console.error(":exclamation: ส่ง SMS ไม่สำเร็จ:", smsError.message);
+        }
 
         res.status(200).json({
             success: true,
