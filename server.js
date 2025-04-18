@@ -15,6 +15,7 @@ dotenv.config({path:'./config/config.env'});
 const companies = require('./routes/companies');
 const bookings = require('./routes/bookings');
 const auth = require('./routes/auth');
+const feedbacks = require('./routes/feedbacks');
 
 //Connect to database
 connectDB();
@@ -45,6 +46,7 @@ app.use(cookieParser());
 app.use('/api/v1/companies',companies);
 app.use('/api/v1/bookings',bookings)
 app.use('/api/v1/auth',auth);
+app.use('/api/v1/feedbacks',feedbacks);
 
 //Running server
 const PORT=process.env.PORT || 5000;

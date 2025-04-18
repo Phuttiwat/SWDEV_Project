@@ -1,7 +1,7 @@
 const Feedback = require('../models/Feedback');
 const Booking = require('../models/Booking');
 const Company = require('../models/Company');
-
+const mongoose = require('mongoose');
 //@desc     Get all bookings
 //@route    GET /api/v1/feedbacks
 //@access   Public
@@ -20,7 +20,7 @@ exports.getFeedbacks = async (req,res,next)=>{
                 select: 'name description tel'
             });
         }else{
-            query=Booking.find().populate({
+            query=Feedback.find().populate({
                 path: 'company',
                 select: 'name description tel'
             });
@@ -57,7 +57,7 @@ exports.getFeedback = async (req,res,next)=>{
 
         res.status(200).json({
             success:true,
-            data: booking
+            data: feedback
         })
     }catch(error){
         console.log(error);
@@ -88,9 +88,9 @@ exports.addFeedback = async (req,res,next)=>{
 
         //add user Id to req.body
         req.body.user=req.user.id;
-
+        req.body.company = booking.company;
         const bookDate = new Date(req.body.bookDate);
-        const createAt = new Date.now;
+        const createAt = Date.now;
         if (createAt < bookDate) {
             return res.status(400).json({
                 success: false,
@@ -125,7 +125,7 @@ exports.updateFeedback=async (req,res,next)=>{
         if(feedback.user.toString()!== req.user.id && req.user.role !== 'admin'){
             return res.status(401).json({success:false,message:`User ${req.user.id} is not authorized to update this feedback`});
         }
-
+        console.log(req.body);
         feedback=await Feedback.findByIdAndUpdate(req.params.id,req.body,{
             new:true,
             runValidators:true

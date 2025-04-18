@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const FeedBackSchema = new mongoose.Schema({
-    message:{
+    text:{
         type: String,
         require: true
     },
