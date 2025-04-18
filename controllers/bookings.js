@@ -1,6 +1,6 @@
 const Booking = require("../models/Booking")
 const Company = require("../models/Company")
-const smsService = require("../services/smsService")
+const sendSMS = require("../services/smsService")
 //@desc     Get all bookings
 //@route    GET /api/v1/bookings
 //@access   Public
