@@ -1,5 +1,6 @@
 const Company = require('../models/Company');
 const Booking = require('../models/Booking');
+const Feedback = require('../models/Feedback');
 
 exports.getCompanies= async (req,res,next)=>{
     let query;
@@ -20,7 +21,13 @@ exports.getCompanies= async (req,res,next)=>{
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match=>`$${match}`);
 
     //finding resource
-    query = Company.find(JSON.parse(queryStr)).populate('bookings');
+    query = Company.find(JSON.parse(queryStr)).populate({
+            path:"bookings",
+            select:"bookDate user"
+        }).populate({
+            path:"feedbacks",
+            select:"text user"
+        });
 
     //Select Fields
     if(req.query.select){
@@ -70,7 +77,13 @@ exports.getCompanies= async (req,res,next)=>{
 }
 exports.getCompany= async (req,res,next)=>{
     try {
-        const company = await Company.findById(req.params.id);
+        const company = await Company.findById(req.params.id).populate({
+            path: "bookings",
+            select: "bookDate user"
+        }).populate({
+            path: "feedbacks",
+            select: "text user"
+        });
         if(!company){
             return res.status(400).json({success:false});
         }
@@ -104,6 +117,7 @@ exports.deleteCompany= async (req,res,next)=>{
             return res.status(400).json({success:false});
         }
         await Booking.deleteMany({company: req.params.id});
+        await Feedback.deleteMany({company: req.params.id});
         await Company.deleteOne({_id: req.params.id});
         return res.status(200).json({success:true, data:{}});
     } catch (err) {
