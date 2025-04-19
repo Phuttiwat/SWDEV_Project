@@ -32,7 +32,17 @@ exports.getBookings = async (req,res,next)=>{
         res.status(200).json({
             success:true,
             count: bookings.length,
-            data: bookings
+            data: bookings.map(booking => ({
+                id: booking._id,
+                bookDate: booking.bookDate,
+                company: {
+                    id: booking.company._id,
+                    name: booking.company.name,
+                    description: booking.company.description,
+                    website: booking.company.website,
+                    tel: booking.company.tel
+                }
+            }))
         });
     }catch(error){
         console.log(error);
