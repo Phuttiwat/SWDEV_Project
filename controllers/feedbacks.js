@@ -100,7 +100,7 @@ exports.addFeedback = async (req,res,next)=>{
 
         const feedback = await Feedback.create(req.body);
 
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             data: feedback
         });
