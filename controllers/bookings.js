@@ -179,7 +179,7 @@ exports.addBooking = async (req,res,next)=>{
             console.error(":exclamation: ส่ง SMS ไม่สำเร็จ:", smsError.message);
         }
 
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             data: booking
         });
@@ -210,7 +210,7 @@ exports.updateBooking=async (req,res,next)=>{
             runValidators:true
         });
 
-        res.status(201).json({
+        res.status(200).json({
             success:true,
             data: booking
         });
