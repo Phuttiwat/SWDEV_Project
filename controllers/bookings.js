@@ -210,7 +210,7 @@ exports.updateBooking=async (req,res,next)=>{
             runValidators:true
         });
 
-        res.status(200).json({
+        res.status(201).json({
             success:true,
             data: booking
         });
