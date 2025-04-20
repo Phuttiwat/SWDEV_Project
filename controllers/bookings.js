@@ -87,6 +87,7 @@ exports.getBookingsByDate = async (req,res,next)=>{
 
         res.status(200).json({
             success: true,
+            count: bookings.length,
             data: bookings
         });
     } catch (error) {
