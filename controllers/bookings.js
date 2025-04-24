@@ -198,7 +198,7 @@ exports.updateBooking=async (req,res,next)=>{
         let booking= await Booking.findById(req.params.id);
 
         if(!booking){
-            return res.stataus.json({success:false,message:`No booking with the id of ${req.params.id}`});
+            return res.status.json({success:false,message:`No booking with the id of ${req.params.id}`});
         }
 
         //Make sure user is the appointment owner
